@@ -78,9 +78,52 @@ function App() {
   const [images, setImages] = useState([]);
   const [activeImageId, setActiveImageId] = useState(null);
   const [fullscreenImageId, setFullscreenImageId] = useState(null);
-  const [selectedClass, setSelectedClass] = useState('');
-  const [classOptions, setClassOptions] = useState([]);
-  const [classDraft, setClassDraft] = useState('');
+  // Hardcoded class names
+  const HARDCODED_CLASSES = [
+  'ACB_Motorised_Drawout',
+  'ACB_EDO',
+  'MCCB',
+  'MCB',
+  'MPCB',
+  'CT',
+  'Control_Transformer',
+  'Power_Transformer_2W',
+  'Bus_Duct',
+  'Annunciator',
+  'Neutral_Grounding_Isolator',
+  'Ammeter_Selector_Switch',
+  'Voltmeter_Selector_Switch',
+  'Ammeter',
+  'Voltmeter',
+  'Multifunction_Meter',
+  'Indication_Lamp',
+  'Time_Delay_Relay',
+  'Winding_Temperature_Alarm',
+  'Winding_Temperature_Trip',
+  'Overcurrent_Relay_Instantaneous',
+  'Overcurrent_Relay_IDMT',
+  'Earth_Fault_Relay_IDMT',
+  'Standby_Earth_Fault_Relay',
+  'Restricted_Earth_Fault_Relay',
+  'Master_Trip_Relay',
+  'Trip_Circuit_Supervision',
+  'Under_Voltage_Relay',
+  'Voltage_Detection_Relay',
+  'Voltage_Transducer',
+  'Surge_Arrestor',
+  'Shunt_With_Ammeter',
+  'E_Stop',
+  'Knife_Switch',
+  'Transformer_Door_Limit_Switch',
+  'Auto_Bus_Transfer',
+  'Trip_Selector_Switch',
+  'Auto_Manual_Switch',
+  'Charger_Dual_Float_Boost',
+  'DC_Converter',
+  'PT'
+];
+  const [selectedClass, setSelectedClass] = useState(HARDCODED_CLASSES[0]);
+  const classOptions = HARDCODED_CLASSES;
   const [exportFormat, setExportFormat] = useState('coco');
   const [drawStart, setDrawStart] = useState(null);
   const [drawCurrent, setDrawCurrent] = useState(null);
@@ -99,15 +142,7 @@ function App() {
   const fullscreenImage = useMemo(() => images.find((img) => img.id === fullscreenImageId), [images, fullscreenImageId]);
 
   // --- Effects and logic (moved from top level) ---
-  useEffect(() => {
-    if (!classOptions.length) {
-      setSelectedClass('');
-      return;
-    }
-    if (!classOptions.includes(selectedClass)) {
-      setSelectedClass(classOptions[0]);
-    }
-  }, [classOptions, selectedClass]);
+  // No need to update classOptions or selectedClass dynamically
 
   useEffect(() => {
     return () => {
@@ -311,24 +346,7 @@ function App() {
     event.target.value = ''
   }
 
-  const addClassOption = () => {
-    const normalized = classDraft.trim()
-    if (!normalized || classOptions.includes(normalized)) {
-      return
-    }
-
-    setClassOptions((previous) => [...previous, normalized])
-    setSelectedClass(normalized)
-    setClassDraft('')
-  }
-
-  const removeClassOption = (className) => {
-    setClassOptions((previous) => previous.filter((item) => item !== className))
-    if (selectedClass === className) {
-      const next = classOptions.find((item) => item !== className) || ''
-      setSelectedClass(next)
-    }
-  }
+  // Remove add/remove class logic
 
   const readPointerPosition = (event) => {
     // Use modal image bounds if modal is open, otherwise use canvasRef
@@ -823,24 +841,7 @@ function App() {
                     ))}
                   </select>
                 </div>
-                <div className="control-group class-control">
-                  <span>Add Class</span>
-                  <div className="inline-control">
-                    <input
-                      type="text"
-                      value={classDraft}
-                      onChange={(e) => setClassDraft(e.target.value)}
-                      placeholder="new class"
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter") {
-                          e.preventDefault();
-                          addClassOption();
-                        }
-                      }}
-                    />
-                    <button onClick={addClassOption}>Add</button>
-                  </div>
-                </div>
+                {/* Class add/remove UI removed, using hardcoded classes */}
                 <div className="class-chip-row">
                   {classOptions.map((className) => (
                     <div
@@ -850,7 +851,6 @@ function App() {
                       <button onClick={() => setSelectedClass(className)}>
                         {className}
                       </button>
-                      <button onClick={() => removeClassOption(className)}>×</button>
                     </div>
                   ))}
                 </div>
