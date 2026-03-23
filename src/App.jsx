@@ -1,6 +1,14 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import JSZip from 'jszip';
 
+// Helper to get filename without extension
+function getFileStem(filename) {
+  if (typeof filename !== 'string') return '';
+  const lastDot = filename.lastIndexOf('.');
+  if (lastDot === -1) return filename;
+  return filename.substring(0, lastDot);
+}
+
 const HANDLE_DEFINITIONS = [
   { key: 'nw', x: 0, y: 0 },
   { key: 'n', x: 0.5, y: 0 },
